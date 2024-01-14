@@ -1,12 +1,12 @@
-from pathlib import Path
-from textwrap import dedent
-
-from auto_sdlc.coder_dx import set_docstring, get_docstring 
-from auto_sdlc.ask import get_answer, yes_or_no
 import tempfile
 import shutil
 import pytest
+
 from pathlib import Path
+from textwrap import dedent
+
+from auto_sdlc.python_developer import set_docstring, get_docstring 
+from auto_sdlc.ask import get_answer, yes_or_no
 
 
 SAMPLE_PROJECT_PATH = Path("tests/integration/resources/sample_project_1").absolute()

@@ -1,5 +1,5 @@
 from pathlib import Path
-from auto_sdlc.coder_dx import FilePosition, FileRange
+from auto_sdlc.python_developer import FilePosition, FileRange
 
 def test_file_range_str(tmp_path):
     file_path = tmp_path / "test_file.txt"

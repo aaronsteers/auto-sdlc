@@ -7,7 +7,7 @@ from pathlib import Path
 
 from pydantic import BaseModel
 from auto_sdlc import ask
-from auto_sdlc.coder_dx import get_docstring, set_docstring
+from auto_sdlc.python_developer import get_docstring, set_docstring
 from auto_sdlc.file_ops import FilePlace, FileRange, FilePosition
 
 import difflib
