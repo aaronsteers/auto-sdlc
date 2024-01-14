@@ -3,9 +3,28 @@ from textwrap import dedent
 
 from auto_sdlc.coder_dx import set_docstring, get_docstring 
 from auto_sdlc.ask import get_answer, yes_or_no
+import tempfile
+import shutil
+import pytest
+from pathlib import Path
 
 
-SAMPLE_PROJECT_PATH = Path("./../resources/sample_project")
+SAMPLE_PROJECT_PATH = Path("tests/integration/resources/sample_project_1").absolute()
+
+@pytest.fixture(scope="function")
+def sample_project_fixture() -> Path:
+    # Create a temporary folder
+    temp_folder = Path(tempfile.mkdtemp()) / "sample_project_1"
+
+    # Copy the sample project to the temporary folder
+    sample_project_path = SAMPLE_PROJECT_PATH
+    shutil.copytree(sample_project_path, temp_folder)
+
+    # Yield the path to the temporary folder
+    yield Path(temp_folder)
+
+    # Remove the temporary folder and its contents
+    shutil.rmtree(temp_folder)
 
 
 def test_llm_yes_or_no():
@@ -58,9 +77,21 @@ def test_author_docstring():
     assert eval_result, "y"
 
 
-def test_add_docstring():
+def test_add_docstring(sample_project_fixture):
     """Test add docstring to a file."""
-    # TODO: Add test for adding docstring to a file.
+    main_file = sample_project_fixture / "main.py"
+    assert main_file.exists(), f"main.py should exist at {main_file}"
+    assert get_docstring(main_file) is None, "main.py should not have a docstring yet."
+    for docstring_text in [
+        '"""This is a single-line docstring."""\n',
+        '"""\nThis is a docstring.\n"""\n',
+        '"""This is a multi-line docstring.\n\nWith some detail.\n"""\n',
+        '"""\nThis is another multi-line docstring.\n\nWith some detail.\n"""\n',
+    ]:
+        set_docstring(main_file, docstring=docstring_text)
+        assert docstring_text in main_file.read_text(), "main.py should have the correct docstring."
+        assert get_docstring(main_file) is not None, "main.py should have a docstring."
+        assert get_docstring(main_file) == docstring_text, "main.py should have the correct docstring."
 
 
 def test_modify_docstring():
